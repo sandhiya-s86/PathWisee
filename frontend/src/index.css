@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 222 47% 97%;
+        --foreground: 222 47% 11%;
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 47% 11%;
+        --primary: 271 81% 56%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 45 93% 58%;
+        --secondary-foreground: 222 47% 11%;
+        --muted: 210 40% 96%;
+        --muted-foreground: 215 16% 47%;
+        --accent: 158 64% 52%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 214 32% 91%;
+        --input: 214 32% 91%;
+        --ring: 271 81% 56%;
+        --radius: 1rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply font-sans;
+        margin: 0;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-outfit;
+    }
+}
+
+/* Shader Container */
+.shader-container {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.shader-container canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* Dark Overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 15, 0.65);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Glassmorphic Navbar */
+.glass-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Premium Button */
+.premium-button {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
+    transition: all 0.3s ease;
+}
+
+.premium-button:hover {
+    box-shadow: 0 15px 50px rgba(139, 92, 246, 0.6);
+    transform: translateY(-2px);
+}
+
+/* Glass Button */
+.glass-button {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Glass Badge */
+.glass-badge {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+/* Feature Cards */
+.feature-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    transition: all 0.4s ease;
+}
+
+.feature-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+}
+
+.feature-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+/* CTA Card */
+.cta-card {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 2rem;
+    padding: 4rem 2rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+}
+
+/* Animations */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.8s ease-out forwards;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.7);
+}
+
+/* Auth Card */
+.auth-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Auth Input */
+.auth-input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    height: 3rem;
+    padding: 0 1rem;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.auth-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-input:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    outline: none;
+}
+
+.auth-input:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Custom selection color */
+::selection {
+    background-color: #8b5cf6;
+    color: white;
+}
+
+/* Ghost Cursor */
+.ghost-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+}
+
+.ghost-cursor-inner {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+}
+
+.ghost-cursor-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent 70%);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.ghost-cursor-trail {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    width: 10px;
+    height: 10px;
+    background: rgba(168, 85, 247, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(4px);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.3;
+    }
+}
+
+/* Hide default cursor during quiz */
+body.quiz-active {
+    cursor: none !important;
+}
+
+body.quiz-active * {
+    cursor: none !important;
+}
+
+/* Smooth transitions */
+* {
+    scroll-behavior: smooth;
+}
