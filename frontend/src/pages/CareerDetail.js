@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, IndianRupee, BookOpen, Award, GraduationCap, Building2, FileText, Clock, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
 
 export default function CareerDetail() {
   const { careerId } = useParams();

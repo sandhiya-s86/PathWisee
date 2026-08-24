@@ -1,4 +1,6 @@
 require('dotenv').config();
+const path    = require('path');
+const fs      = require('fs');
 const express = require('express');
 const cors    = require('cors');
 
@@ -41,6 +43,13 @@ app.use('/api/dashboard',   dashboardRoutes);
 app.use('/api/admin',       adminRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
+// Serve the React build (single-service deployment). SPA fallback for client-side routes.
+const buildDir = path.join(__dirname, '..', 'frontend', 'build');
+if (fs.existsSync(buildDir)) {
+  app.use(express.static(buildDir));
+  app.get(/^(?!\/api).*/, (req, res) => res.sendFile(path.join(buildDir, 'index.html')));
+}
 
 app.use((req, res) => res.status(404).json({ detail: 'Route not found' }));
 

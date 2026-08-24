@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { FileText, Search, Calendar, Users, BarChart3, BookOpen } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
 
 const categoryFilters = ['All', 'Engineering', 'Medical', 'Management', 'Law', 'Government'];
 

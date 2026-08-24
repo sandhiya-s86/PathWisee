@@ -1,0 +1,13 @@
+{
+  "name": "pathwise",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install --legacy-peer-deps",
+    "build": "cd frontend && CI=false npm run build",
+    "start": "node backend/server.js"
+  }
+}

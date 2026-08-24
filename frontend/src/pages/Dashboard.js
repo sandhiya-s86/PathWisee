@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, Target, Map, Award, ArrowRight, BookOpen, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
 
 export default function Dashboard() {
   const { user, token } = useAuth();

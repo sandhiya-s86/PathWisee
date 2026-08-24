@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import { Code, Stethoscope, Scale, Briefcase, Palette, Building2, Shield, BarChart3, Layers, TrendingUp, ArrowRight, Search, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
 
 const iconMap = {
   Code, BarChart3, Layers, Palette, TrendingUp, Briefcase, Shield,

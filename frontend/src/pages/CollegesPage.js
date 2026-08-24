@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { Building2, Search, MapPin, Star, IndianRupee } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
 
 export default function CollegesPage() {
   const { token } = useAuth();
