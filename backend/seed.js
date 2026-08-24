@@ -11,7 +11,9 @@ async function clearSeedData(conn) {
   console.log('Clearing existing seed data...');
   const tables = [
     'question_option_career_weights', 'question_options', 'questions',
-    'user_progress_milestones', 'milestones', 'learning_paths',
+    'user_progress_milestones', 'milestones', 'learning_paths', 'roadmaps',
+    'exam_career_relations', 'entrance_exams',
+    'college_exam_relations', 'college_career_relations', 'colleges',
     'career_skills_required', 'career_academic_stages', 'career_streams', 'careers',
   ];
   for (const table of tables) {
@@ -250,6 +252,311 @@ async function seedLearningPaths(conn) {
     }
   }
   console.log(`✓ Inserted ${paths.length} learning paths`);
+  return paths;
+}
+
+// Roadmaps power the Learning Path page (GET /api/careers/:id/roadmap).
+// Derived from the same milestone data as learning paths.
+async function seedRoadmaps(conn, paths) {
+  for (const lp of paths) {
+    const content = {
+      steps: lp.milestones.map(m => ({
+        id: m.id, title: m.title, description: m.description, duration: m.duration,
+      })),
+    };
+    await conn.execute(
+      'INSERT INTO roadmaps (id, career_id, content) VALUES (?, ?, ?)',
+      [`roadmap_${lp.career_id}`, lp.career_id, JSON.stringify(content)],
+    );
+  }
+  console.log(`✓ Inserted ${paths.length} roadmaps`);
+}
+
+async function seedExams(conn) {
+  const exams = [
+    {
+      id: 'jee_main', name: 'JEE Main', category: 'Engineering',
+      careers: ['software_engineer', 'data_scientist', 'cybersecurity'],
+      data: {
+        full_name: 'Joint Entrance Examination – Main',
+        conducting_body: 'National Testing Agency (NTA)',
+        eligibility: 'Class 12 with Physics, Chemistry & Mathematics',
+        difficulty: 'Hard',
+        subjects: ['Physics', 'Chemistry', 'Mathematics'],
+        top_colleges: ['NIT Trichy', 'IIIT Hyderabad', 'DTU Delhi'],
+      },
+    },
+    {
+      id: 'jee_advanced', name: 'JEE Advanced', category: 'Engineering',
+      careers: ['software_engineer', 'data_scientist', 'cybersecurity'],
+      data: {
+        full_name: 'Joint Entrance Examination – Advanced',
+        conducting_body: 'IITs (rotating)',
+        eligibility: 'Top 2.5 lakh rankers of JEE Main',
+        difficulty: 'Very Hard',
+        subjects: ['Physics', 'Chemistry', 'Mathematics'],
+        top_colleges: ['IIT Bombay', 'IIT Delhi', 'IIT Madras'],
+      },
+    },
+    {
+      id: 'bitsat', name: 'BITSAT', category: 'Engineering',
+      careers: ['software_engineer', 'data_scientist', 'cybersecurity'],
+      data: {
+        full_name: 'BITS Admission Test',
+        conducting_body: 'BITS Pilani',
+        eligibility: 'Class 12 with PCM, 75% aggregate',
+        difficulty: 'Hard',
+        subjects: ['Physics', 'Chemistry', 'Mathematics', 'English', 'Logical Reasoning'],
+        top_colleges: ['BITS Pilani', 'BITS Goa', 'BITS Hyderabad'],
+      },
+    },
+    {
+      id: 'gate', name: 'GATE', category: 'Engineering',
+      careers: ['software_engineer', 'data_scientist', 'cybersecurity'],
+      data: {
+        full_name: 'Graduate Aptitude Test in Engineering',
+        conducting_body: 'IISc / IITs (rotating)',
+        eligibility: "Bachelor's degree in Engineering / Science",
+        difficulty: 'Hard',
+        subjects: ['Engineering Mathematics', 'General Aptitude', 'Subject Paper'],
+        top_colleges: ['IISc Bangalore', 'IIT Bombay', 'IIT Delhi'],
+      },
+    },
+    {
+      id: 'neet_ug', name: 'NEET UG', category: 'Medical',
+      careers: [],
+      data: {
+        full_name: 'National Eligibility cum Entrance Test (UG)',
+        conducting_body: 'National Testing Agency (NTA)',
+        eligibility: 'Class 12 with Physics, Chemistry & Biology',
+        difficulty: 'Very Hard',
+        subjects: ['Physics', 'Chemistry', 'Biology'],
+        top_colleges: ['AIIMS Delhi', 'CMC Vellore', 'JIPMER Puducherry'],
+      },
+    },
+    {
+      id: 'cat', name: 'CAT', category: 'Management',
+      careers: ['product_manager', 'business_analyst', 'digital_marketer'],
+      data: {
+        full_name: 'Common Admission Test',
+        conducting_body: 'IIMs (rotating)',
+        eligibility: "Bachelor's degree with 50% marks",
+        difficulty: 'Hard',
+        subjects: ['Quantitative Ability', 'Verbal Ability', 'Data Interpretation & Logical Reasoning'],
+        top_colleges: ['IIM Ahmedabad', 'IIM Bangalore', 'IIM Calcutta'],
+      },
+    },
+    {
+      id: 'xat', name: 'XAT', category: 'Management',
+      careers: ['product_manager', 'business_analyst', 'digital_marketer'],
+      data: {
+        full_name: 'Xavier Aptitude Test',
+        conducting_body: 'XLRI Jamshedpur',
+        eligibility: "Bachelor's degree in any discipline",
+        difficulty: 'Hard',
+        subjects: ['Decision Making', 'Verbal Ability', 'Quantitative Ability', 'General Knowledge'],
+        top_colleges: ['XLRI Jamshedpur', 'XIM Bhubaneswar', 'IMT Ghaziabad'],
+      },
+    },
+    {
+      id: 'clat', name: 'CLAT', category: 'Law',
+      careers: [],
+      data: {
+        full_name: 'Common Law Admission Test',
+        conducting_body: 'Consortium of NLUs',
+        eligibility: 'Class 12 with 45% marks',
+        difficulty: 'Moderate',
+        subjects: ['English', 'Legal Reasoning', 'Logical Reasoning', 'Current Affairs', 'Quantitative Techniques'],
+        top_colleges: ['NLSIU Bangalore', 'NALSAR Hyderabad', 'NLU Delhi'],
+      },
+    },
+    {
+      id: 'upsc_cse', name: 'UPSC CSE', category: 'Government',
+      careers: [],
+      data: {
+        full_name: 'Union Public Service Commission – Civil Services Examination',
+        conducting_body: 'UPSC',
+        eligibility: "Bachelor's degree, age 21-32",
+        difficulty: 'Very Hard',
+        subjects: ['General Studies', 'CSAT', 'Optional Subject', 'Essay'],
+        top_colleges: ['LBSNAA Mussoorie (training)'],
+      },
+    },
+    {
+      id: 'ssc_cgl', name: 'SSC CGL', category: 'Government',
+      careers: [],
+      data: {
+        full_name: 'Staff Selection Commission – Combined Graduate Level',
+        conducting_body: 'Staff Selection Commission',
+        eligibility: "Bachelor's degree in any discipline",
+        difficulty: 'Moderate',
+        subjects: ['General Intelligence', 'General Awareness', 'Quantitative Aptitude', 'English'],
+        top_colleges: [],
+      },
+    },
+  ];
+
+  for (const e of exams) {
+    await conn.execute(
+      'INSERT INTO entrance_exams (id, name, category, data) VALUES (?, ?, ?, ?)',
+      [e.id, e.name, e.category, JSON.stringify(e.data)],
+    );
+    for (const careerId of e.careers) {
+      await conn.execute(
+        'INSERT IGNORE INTO exam_career_relations (exam_id, career_id) VALUES (?, ?)',
+        [e.id, careerId],
+      );
+    }
+  }
+  console.log(`✓ Inserted ${exams.length} entrance exams`);
+}
+
+async function seedColleges(conn) {
+  const TECH = ['software_engineer', 'data_scientist', 'cybersecurity'];
+  const MGMT = ['product_manager', 'business_analyst', 'digital_marketer'];
+
+  const colleges = [
+    {
+      id: 'iit_bombay', name: 'IIT Bombay', state: 'Maharashtra',
+      exams: ['jee_advanced', 'gate'], careers: TECH,
+      data: {
+        location: { city: 'Mumbai', state: 'Maharashtra' },
+        type: 'Government', rating: 4.9, fees_range: '₹2-2.5 Lakh/year',
+        courses: ['B.Tech', 'M.Tech', 'Dual Degree', 'PhD'],
+        entrance_exams: ['JEE Advanced', 'GATE'],
+      },
+    },
+    {
+      id: 'iit_delhi', name: 'IIT Delhi', state: 'Delhi',
+      exams: ['jee_advanced', 'gate'], careers: TECH,
+      data: {
+        location: { city: 'New Delhi', state: 'Delhi' },
+        type: 'Government', rating: 4.8, fees_range: '₹2-2.5 Lakh/year',
+        courses: ['B.Tech', 'M.Tech', 'MS(R)', 'PhD'],
+        entrance_exams: ['JEE Advanced', 'GATE'],
+      },
+    },
+    {
+      id: 'iit_madras', name: 'IIT Madras', state: 'Tamil Nadu',
+      exams: ['jee_advanced', 'gate'], careers: TECH,
+      data: {
+        location: { city: 'Chennai', state: 'Tamil Nadu' },
+        type: 'Government', rating: 4.9, fees_range: '₹2-2.5 Lakh/year',
+        courses: ['B.Tech', 'M.Tech', 'BS Data Science (online)', 'PhD'],
+        entrance_exams: ['JEE Advanced', 'GATE'],
+      },
+    },
+    {
+      id: 'nit_trichy', name: 'NIT Tiruchirappalli', state: 'Tamil Nadu',
+      exams: ['jee_main', 'gate'], careers: TECH,
+      data: {
+        location: { city: 'Tiruchirappalli', state: 'Tamil Nadu' },
+        type: 'Government', rating: 4.6, fees_range: '₹1.5-2 Lakh/year',
+        courses: ['B.Tech', 'M.Tech', 'MCA', 'MBA'],
+        entrance_exams: ['JEE Main', 'GATE'],
+      },
+    },
+    {
+      id: 'bits_pilani', name: 'BITS Pilani', state: 'Rajasthan',
+      exams: ['bitsat'], careers: TECH,
+      data: {
+        location: { city: 'Pilani', state: 'Rajasthan' },
+        type: 'Private', rating: 4.6, fees_range: '₹5-6 Lakh/year',
+        courses: ['B.E.', 'M.Sc.', 'M.E.', 'PhD'],
+        entrance_exams: ['BITSAT'],
+      },
+    },
+    {
+      id: 'iiit_hyderabad', name: 'IIIT Hyderabad', state: 'Telangana',
+      exams: ['jee_main'], careers: TECH,
+      data: {
+        location: { city: 'Hyderabad', state: 'Telangana' },
+        type: 'Private (Deemed)', rating: 4.7, fees_range: '₹4-4.5 Lakh/year',
+        courses: ['B.Tech CSE', 'B.Tech ECE', 'MS by Research', 'PhD'],
+        entrance_exams: ['JEE Main', 'UGEE'],
+      },
+    },
+    {
+      id: 'aiims_delhi', name: 'AIIMS Delhi', state: 'Delhi',
+      exams: ['neet_ug'], careers: [],
+      data: {
+        location: { city: 'New Delhi', state: 'Delhi' },
+        type: 'Government', rating: 4.9, fees_range: '₹1,600/year (MBBS)',
+        courses: ['MBBS', 'MD', 'MS', 'B.Sc Nursing'],
+        entrance_exams: ['NEET UG', 'INI-CET'],
+      },
+    },
+    {
+      id: 'cmc_vellore', name: 'CMC Vellore', state: 'Tamil Nadu',
+      exams: ['neet_ug'], careers: [],
+      data: {
+        location: { city: 'Vellore', state: 'Tamil Nadu' },
+        type: 'Private', rating: 4.7, fees_range: '₹50k-1 Lakh/year',
+        courses: ['MBBS', 'MD', 'B.Sc Nursing', 'Allied Health'],
+        entrance_exams: ['NEET UG'],
+      },
+    },
+    {
+      id: 'iim_ahmedabad', name: 'IIM Ahmedabad', state: 'Gujarat',
+      exams: ['cat'], careers: MGMT,
+      data: {
+        location: { city: 'Ahmedabad', state: 'Gujarat' },
+        type: 'Government', rating: 4.9, fees_range: '₹12-13 Lakh/year',
+        courses: ['MBA (PGP)', 'PGPX', 'PhD'],
+        entrance_exams: ['CAT'],
+      },
+    },
+    {
+      id: 'iim_bangalore', name: 'IIM Bangalore', state: 'Karnataka',
+      exams: ['cat'], careers: MGMT,
+      data: {
+        location: { city: 'Bengaluru', state: 'Karnataka' },
+        type: 'Government', rating: 4.8, fees_range: '₹12-13 Lakh/year',
+        courses: ['MBA (PGP)', 'EPGP', 'PhD'],
+        entrance_exams: ['CAT'],
+      },
+    },
+    {
+      id: 'xlri_jamshedpur', name: 'XLRI Jamshedpur', state: 'Jharkhand',
+      exams: ['xat'], careers: MGMT,
+      data: {
+        location: { city: 'Jamshedpur', state: 'Jharkhand' },
+        type: 'Private', rating: 4.6, fees_range: '₹14-15 Lakh (total)',
+        courses: ['PGDM (BM)', 'PGDM (HRM)', 'FPM'],
+        entrance_exams: ['XAT'],
+      },
+    },
+    {
+      id: 'nlsiu_bangalore', name: 'NLSIU Bangalore', state: 'Karnataka',
+      exams: ['clat'], careers: [],
+      data: {
+        location: { city: 'Bengaluru', state: 'Karnataka' },
+        type: 'Government', rating: 4.7, fees_range: '₹3-4 Lakh/year',
+        courses: ['BA LLB (Hons)', 'LLM', 'MPP'],
+        entrance_exams: ['CLAT'],
+      },
+    },
+  ];
+
+  for (const c of colleges) {
+    await conn.execute(
+      'INSERT INTO colleges (id, name, state, data) VALUES (?, ?, ?, ?)',
+      [c.id, c.name, c.state, JSON.stringify(c.data)],
+    );
+    for (const examId of c.exams) {
+      await conn.execute(
+        'INSERT IGNORE INTO college_exam_relations (college_id, exam_id) VALUES (?, ?)',
+        [c.id, examId],
+      );
+    }
+    for (const careerId of c.careers) {
+      await conn.execute(
+        'INSERT IGNORE INTO college_career_relations (college_id, career_id) VALUES (?, ?)',
+        [c.id, careerId],
+      );
+    }
+  }
+  console.log(`✓ Inserted ${colleges.length} colleges`);
 }
 
 async function main() {
@@ -259,7 +566,10 @@ async function main() {
     await clearSeedData(conn);
     await seedCareers(conn);
     await seedQuestions(conn);
-    await seedLearningPaths(conn);
+    const paths = await seedLearningPaths(conn);
+    await seedRoadmaps(conn, paths);
+    await seedExams(conn);
+    await seedColleges(conn);
     console.log('\nDatabase seeding completed successfully!');
   } finally {
     conn.release();
